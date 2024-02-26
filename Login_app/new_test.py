@@ -1,5 +1,8 @@
+import tkinter as tk
 import tkinter
 from tkinter import *
+from tkinter import messagebox, Entry
+
 import sqlite3
 import sys
 
@@ -25,9 +28,10 @@ def create_table(data):
         pass
 
 def login():
-    print("Enter your data")
-    log = input(str("Email: "))
-    pas = input("Password: ")
+
+    log = EntryL.get()
+    pas = EntryP.get()
+
 
     cur = data.cursor()
     cur.execute("""
@@ -39,42 +43,59 @@ def login():
     check_login = result1_dict.get(log)
 
     if check_login == pas:
-        print("Login successful")
+        print('OK')
+        login_new_window()
     else:
         print("Login failed - your password or login is incorrect!")
+        messagebox.showwarning(title='Login', message='Login failed - your password or login is incorrect!')
 
     #######---------MENU-------------_#############
 
-    while True:
-        print("1. Show your data")
-        print("2. Exit to menu")
+    #while True:
+    #    print("1. Show your data")
+    #    print("2. Exit to menu")
 
-        try:
-            user_choice1 = int(input('Chose menu: '))
-        except:
-            pass
+    #    try:
+    #        user_choice1 = int(input('Chose menu: '))
+    #    except:
+    #        pass
 
-        if user_choice1 == 1:
-            print("\nYour profile: \n")
+    #   if user_choice1 == 1:
+    #       print("\nYour profile: \n")
 
-            cur = data.cursor()
-            cur.execute("""
-                        SELECT name, lastname, email, password, reminder,age FROM LoginPass WHERE email = ?
-                        """, (log,))
-            result2 = cur.fetchall()
+        #     cur = data.cursor()
+        #     cur.execute("""
+        #                 SELECT name, lastname, email, password, reminder,age FROM LoginPass WHERE email = ?
+        #                 """, (log,))
+        #     result2 = cur.fetchall()
+        #
+        #     for dat in result2:
+        #         result4 = dat
+        #
+        #     print('Name:', result4[0])
+        #     print('Lastname:', result4[1])
+        #     print('Email:', result4[2])
+        #     print('Password:', result4[3])
+        #     print('Tips Password:', result4[4])
+        #     print('Age:', result4[5], '\n')
+        #
+        # if user_choice1 == 2:
+        #     break
 
-            for dat in result2:
-                result4 = dat
+def login_new_window():
 
-            print('Name:', result4[0])
-            print('Lastname:', result4[1])
-            print('Email:', result4[2])
-            print('Password:', result4[3])
-            print('Tips Password:', result4[4])
-            print('Age:', result4[5], '\n')
+    window = tk.Toplevel()
+    window.configure(background='grey')
+    window.resizable(width=False, height=False)
+    window.geometry('400x500')
 
-        if user_choice1 == 2:
-            break
+    canvas2 = tk.Canvas(window, width=400, height=500)
+    canvas2.pack(fill='both', expand=True)
+    canvas2.pack()
+    canvas2.create_text(195, 30, text='Welcome to your profile!', font='calibri 20', fill='white')
+
+
+
 
 def singup():
 
@@ -133,27 +154,27 @@ canvas.create_text(70, 180, text="Login", font='calibri 17 bold', fill='white')
 canvas.create_text(70, 180, text="Login", font='calibri 17 bold', fill='white')
 
 frameL  = Frame(root,width=200, height=20, bg='white').place(x=130,y=170)
-loginL=StringVar()
-EntryL = Entry(frameL,width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=130,y=167)
-
+EntryL = Entry(frameL,width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
+EntryL.place(x=130,y=167)
 login_button = Button(root,text='Login', font= 'calibri 17', fg = 'black', bg = 'white', command=login).place(x=195,y=270)
+
+
 
 # Password
 canvas.create_text(70, 243, text="Password", font='calibri 17 bold', fill='white')
 
 frameP = Frame(root, width=200, height=20, bg='white').place(x=130,y=230)
-loginP = StringVar()
-EntryP = Entry(frameP, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=130,y=230)
+EntryP = Entry(frameP, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
+EntryP.place(x=130,y=230)
 
 # Remind Passwords
 
-remind_pass = Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, bg='white',
-                        command= "new_window()").place(x=130, y=320)
+remind_pass = Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, bg='white',command= remind_password).place(x=130, y=320)
 
 # Register Accounts
 
 canvas.create_text(230,400, text='You dont have accounts? Sing up!',font='calibri 17 bold', fill='white')
-singup_button = Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white',command=singup).place(x=180,y=420)
+singup_button = Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white',command= singup).place(x=180,y=420)
 
 
 
