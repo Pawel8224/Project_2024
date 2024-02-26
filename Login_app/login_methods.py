@@ -1,21 +1,16 @@
-import tkinter
-from tkinter import *
+from __future__ import print_function
 import sqlite3
 import sys
+import ssl
 
-root = Tk()
-root.title('Plan Your Travel - login')
-root.geometry('600x600')
-root.resizable(width=False, height=False)
+ssl._create_default_https_context = ssl._create_unverified_context
 
-canvas = Canvas(root, width=600, height=600)
-canvas.pack(fill = 'both',expand = True)
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
-
-
-
-################### DEF ###########################
 data = sqlite3.connect("file:/Users/pablom/PycharmProjects/Projekty2024/Login_app/Login_data.db", uri=True)
+
 
 def create_table(data):
     try:
@@ -23,6 +18,7 @@ def create_table(data):
         cur.execute("CREATE TABLE LoginPass(name, lastname, email, password, reminder,age)")
     except:
         pass
+
 
 def login():
     print("Enter your data")
@@ -76,8 +72,12 @@ def login():
         if user_choice1 == 2:
             break
 
-def singup():
 
+def singup():
+    print("********************************** \n")
+
+    print(
+        "Super that you want to create an account in our program! \nRegister your account by providing the details below:")
     sing_name = str(input("First Name: "))
     sing_lastname = str(input("Last Name: "))
     sing_email = str(input("Email: "))
@@ -97,6 +97,7 @@ def singup():
                 """, (sing_name, sing_lastname, sing_email, sing_password, sing_remind, sing_age))
     data.commit()
 
+
 def remind_password():
     cur = data.cursor()
     cur.execute("""
@@ -106,55 +107,33 @@ def remind_password():
     e_list = list(sum(result_remind, ()))
 
     print("Forgot your password? No problem!")
+    global email_remind
     email_remind = str(input("Enter your email:"))
+
 
     for line in e_list:
         if line == email_remind:
             print("Your email is in the database! We have sent an email with the opportunity to reset your password.")
+            client_send_email()
             break
         else:
             print("There is no such password in the database!")
             break
 
+def client_send_email():
 
 
-####################### FRONT #######################
+    message = Mail(
+        from_email='pawel.milewski01@gmail.com',
+        to_emails=email_remind,
+        subject='Sending with Twilio SendGrid is Fun',
+        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(str(e))
 
-login_ph = PhotoImage(file='/Users/pablom/Desktop/bbbb.png')
-canvas.create_image(0,0,image=login_ph,anchor='nw')
-
-#TopBar
-
-canvas.create_text(270,80,text="Plan Your Trip! Login to platforms :)", font='calibri 20 bold', fill='white')
-
-canvas.create_text(70, 180, text="Login", font='calibri 17 bold', fill='white')
-
-# Login
-canvas.create_text(70, 180, text="Login", font='calibri 17 bold', fill='white')
-
-frameL  = Frame(root,width=200, height=20, bg='white').place(x=130,y=170)
-loginL=StringVar()
-EntryL = Entry(frameL,width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=130,y=167)
-
-login_button = Button(root,text='Login', font= 'calibri 17', fg = 'black', bg = 'white', command=login).place(x=195,y=270)
-
-# Password
-canvas.create_text(70, 243, text="Password", font='calibri 17 bold', fill='white')
-
-frameP = Frame(root, width=200, height=20, bg='white').place(x=130,y=230)
-loginP = StringVar()
-EntryP = Entry(frameP, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=130,y=230)
-
-# Remind Passwords
-
-remind_pass = Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, bg='white',
-                        command= "new_window()").place(x=130, y=320)
-
-# Register Accounts
-
-canvas.create_text(230,400, text='You dont have accounts? Sing up!',font='calibri 17 bold', fill='white')
-singup_button = Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white',command=singup).place(x=180,y=420)
-
-
-
-root.mainloop()
