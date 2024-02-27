@@ -55,7 +55,7 @@ def login_new_window():
 
     canvas2 = tk.Canvas(window, width=400, height=500)
     canvas2.pack(fill='both', expand=True)
-    canvas2.pack()
+
 
     canvas2.create_text(195, 30, text='Welcome to your profile!', font='calibri 20', fill='white')
 
@@ -74,26 +74,60 @@ def login_new_window():
     Label(window, text="Hint: " + result4[4]).place(x=20, y=170)
     Label(window, text="Age: " + str(result4[5])).place(x=20, y=195)
 
+def singup_tabel():
 
-def singup():
-    sing_name = str(input("First Name: "))
-    sing_lastname = str(input("Last Name: "))
-    sing_email = str(input("Email: "))
-    sing_password = str(input("Password: "))
-    sing_remind = str(input("Give a hint to the password: "))
-    sing_age = int(input("How old are you? "))
-    if sing_age < 18:
-        print("You are too young! Leave the page")
-        sys.exit()
-
-    #################### Tabela  ########################
+    global sing_name
+    global sing_lastname
+    global sing_email
+    global sing_password
+    global sing_remind
+    global sing_age
+    sing_name.get()
 
     cur = data.cursor()
     cur.execute("""
-                INSERT INTO LoginPass(name, lastname, email, password, reminder,age)
-                VALUES(?,?,?,?,?,?)
-                """, (sing_name, sing_lastname, sing_email, sing_password, sing_remind, sing_age))
+                    INSERT INTO LoginPass(name, lastname, email, password, reminder,age)
+                    VALUES(?,?,?,?,?,?)
+                    """, (sing_name, sing_lastname, sing_email, sing_password, sing_remind, sing_age))
     data.commit()
+
+def singup_window():
+    window_singup = tk.Toplevel()
+    window_singup.title("Sing up")
+    window_singup.resizable(width=False, height=False)
+    window_singup.geometry('400x500')
+
+    canvas4 = tk.Canvas(window_singup, width=400, height=500).pack(fill='both', expand=True)
+
+    Label(window_singup, text="Greate that you want to create an account in our program! \nRegister your account by providing the details below:", font='calibri 12 bold').place(x=19,y=10)
+
+
+    Label(window_singup,text="First name: ", font='calibri 16 bold').place(x=40,y=69)
+    sing_name = Entry(window_singup,width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150,y=70)
+
+    Label(window_singup, text="Last name: ", font='calibri 16 bold').place(x=40, y=118)
+    sing_lastname = Entry(window_singup, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150, y=120)
+
+    Label(window_singup, text="Email: ", font='calibri 16 bold').place(x=40, y=169)
+    sing_email = Entry(window_singup, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150,y=170)
+
+    Label(window_singup, text="Password: ", font='calibri 16 bold').place(x=40, y=220)
+    sing_password = Entry(window_singup, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150,y=220)
+
+    Label(window_singup, text="Hint: ", font='calibri 16 bold').place(x=40, y=268)
+    sing_remind= Entry(window_singup, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150,y=270)
+
+    Label(window_singup, text="Age: ", font='calibri 16 bold').place(x=40, y=315)
+    sing_age = Entry(window_singup, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black').place(x=150,y=320)
+
+    #if sing_age <18:
+    #    messagebox.showwarning(title='Age', message='You are too young! Leave the page')
+
+    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white',command=singup_tabel).place(x=190, y=380)
+
+    #################### Tabela  ########################
+
+
 
 
 def remind_password():
@@ -139,7 +173,7 @@ Button(root, text='Login', font='calibri 17', fg='black', bg='white', command=lo
 canvas.create_text(70, 243, text="Password", font='calibri 17 bold', fill='white')
 
 frameP = Frame(root, width=200, height=20, bg='white').place(x=130, y=230)
-EntryP = Entry(frameP, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
+EntryP = Entry(frameP, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black',show = '*')
 EntryP.place(x=130, y=230)
 
 # Remind Passwords
@@ -149,6 +183,6 @@ Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, 
 # Register Accounts
 
 canvas.create_text(230, 400, text='You dont have accounts? Sing up!', font='calibri 17 bold', fill='white')
-Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup).place(
+Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(
     x=180, y=420)
 root.mainloop()
