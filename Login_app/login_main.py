@@ -186,3 +186,4 @@ canvas.create_text(230, 400, text='You dont have accounts? Sing up!', font='cali
 Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(
     x=180, y=420)
 root.mainloop()
+print("ok")
