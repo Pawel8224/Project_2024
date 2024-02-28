@@ -90,7 +90,7 @@ def singup_tabel():
     messagebox.showinfo(title='Register', message='Great! Your account has been created!')
 
 
-def singup_window():
+def singup_window(): # otwiera okno z rejestracja
     window_singup = tk.Toplevel(root)
     window_singup.grab_set()
     window_singup.title("Sing up")
@@ -141,8 +141,25 @@ def singup_window():
     sing_age = Entry(window_singup, textvariable=sing_a, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
     sing_age.place(x=150, y=320)
 
-    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(x=190, y=380)
+    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(x=190, y=380) # otwiera   #
 
+def check_remind_pass(): #sprawdza czy podany email jest w bazie i wysyla maila
+    email_remind = remind_email.get()
+
+    cur = data.cursor()
+    cur.execute("""
+                    SELECT email FROM LoginPass
+                    """)
+    result_remind = cur.fetchall()
+    e_list = list(sum(result_remind, ()))
+
+    for line in e_list:
+        if line == email_remind:
+            messagebox.showinfo(title ='Password', message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+            break
+        else:
+            messagebox.showinfo(title='Password', message='There is no such password in the database!')
+            break
 
 def remind_password():
 
@@ -150,28 +167,20 @@ def remind_password():
     window_remind.title('Reminder')
     window_remind.configure()
     window_remind.geometry('400x500')
+    root.resizable(width=False, height=False)
+
+
+    Label(window_remind,text='Forgot your password? No problem!', font='calibri 17 bold').place(x=50,y=30)
+
+    Label(window_remind,text='Email: ', font='calibri 16').place(x=10,y=100)
+    global remind_email
+    remind_email = Entry(window_remind, font= 'calibri 17', bd = 0, bg = '#e4eaf5', fg = 'black')
+    remind_email.place(x=100,y=100)
+
+    Button(window_remind,text='New Password',font='calibri 17', fg='black', bd=0, bg='white', command=check_remind_pass).place(x=180, y=420)
 
 
 
-
-
-    # cur = data.cursor()
-    # cur.execute("""
-    #             SELECT email FROM LoginPass
-    #             """)
-    # result_remind = cur.fetchall()
-    # e_list = list(sum(result_remind, ()))
-    #
-    # print("Forgot your password? No problem!")
-    # email_remind = str(input("Enter your email:"))
-    #
-    # for line in e_list:
-    #     if line == email_remind:
-    #         print("Your email is in the database! We have sent an email with the opportunity to reset your password.")
-    #         break
-    #     else:
-    #         print("There is no such password in the database!")
-    #         break
 
 
 ####################### FRONT #######################
