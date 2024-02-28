@@ -109,7 +109,6 @@ def singup_window():
     global sing_remind
     global sing_age
 
-    # frame_name = Frame(window_singup, width=70, height=18, bg='grey').place(x=150,y=70)
 
     Label(window_singup, text="First name: ", font='calibri 16 bold').place(x=40, y=69)
     sing_n = StringVar()
@@ -145,25 +144,34 @@ def singup_window():
     Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(x=190, y=380)
 
 
-
 def remind_password():
-    cur = data.cursor()
-    cur.execute("""
-                SELECT email FROM LoginPass
-                """)
-    result_remind = cur.fetchall()
-    e_list = list(sum(result_remind, ()))
 
-    print("Forgot your password? No problem!")
-    email_remind = str(input("Enter your email:"))
+    window_remind = tk.Toplevel(root)
+    window_remind.title('Reminder')
+    window_remind.configure()
+    window_remind.geometry('400x500')
 
-    for line in e_list:
-        if line == email_remind:
-            print("Your email is in the database! We have sent an email with the opportunity to reset your password.")
-            break
-        else:
-            print("There is no such password in the database!")
-            break
+
+
+
+
+    # cur = data.cursor()
+    # cur.execute("""
+    #             SELECT email FROM LoginPass
+    #             """)
+    # result_remind = cur.fetchall()
+    # e_list = list(sum(result_remind, ()))
+    #
+    # print("Forgot your password? No problem!")
+    # email_remind = str(input("Enter your email:"))
+    #
+    # for line in e_list:
+    #     if line == email_remind:
+    #         print("Your email is in the database! We have sent an email with the opportunity to reset your password.")
+    #         break
+    #     else:
+    #         print("There is no such password in the database!")
+    #         break
 
 
 ####################### FRONT #######################
@@ -197,8 +205,7 @@ Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, 
 # Register Accounts
 
 canvas.create_text(230, 400, text='You dont have accounts? Sing up!', font='calibri 17 bold', fill='white')
-Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(
-    x=180, y=420)
+Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(x=180, y=420)
 
 
 
