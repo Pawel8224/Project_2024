@@ -3,9 +3,15 @@ from tkinter import *
 from tkinter import messagebox
 import sqlite3
 
-import os
+from dotenv import load_dotenv
+from os import environ
+
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 root = Tk()
 root.title('Plan Your Travel - login')
@@ -148,37 +154,49 @@ def singup_window(): # otwiera okno z rejestracja
     Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(x=190, y=380) # otwiera   #
 
 def check_remind_pass(): #sprawdza czy podany email jest w bazie i wysyla maila
+
+
     email_remind = remind_email.get()
 
     cur = data.cursor()
     cur.execute("""
-                    SELECT email FROM LoginPass
-                    """)
+                SELECT email FROM LoginPass
+                """)
     result_remind = cur.fetchall()
     e_list = list(sum(result_remind, ()))
+    print(e_list)
+
 
     for line in e_list:
-        if line == email_remind:
-            messagebox.showinfo(title ='Password', message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+            if line == email_remind:
+                messagebox.showinfo(title='Password',
+                                    message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+                load_dotenv()
+                api_key = environ.get('API_KEY')
+                print(api_key)
 
-            message = Mail(
-                from_email='from_email@example.com',
-                to_emails='to@example.com',
-                subject='Sending with Twilio SendGrid is Fun',
-                html_content='<strong>and easy to do anywhere, even with Python</strong>')
-            try:
-                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
-                response = sg.send(message)
-                print(response.status_code)
-                print(response.body)
-                print(response.headers)
-            except Exception as e:
-                print(e)
+                message = Mail(
+                    from_email='pawel.milewski01@gmail.com',
+                    to_emails=email_remind,
+                    subject='Test Pawel application ! :) ',
+                    html_content='<strong>and easy to do anywhere, even with Python</strong>')
+                try:
+                    sg = SendGridAPIClient(api_key)
+                    response = sg.send(message)
 
-            break
-        else:
-            messagebox.showinfo(title='Password', message='There is no such password in the database!')
-            break
+                    print(response.status_code)
+                    print(response.body)
+                    print(response.headers)
+                except Exception as e:
+                    print(message)
+                    print(response)
+                break
+
+
+    else:
+        messagebox.showinfo(title='Password', message='There is no such password in the database!')
+
+
 
 def remind_password():
 
