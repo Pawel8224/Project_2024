@@ -3,6 +3,10 @@ from tkinter import *
 from tkinter import messagebox
 import sqlite3
 
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 root = Tk()
 root.title('Plan Your Travel - login')
 root.geometry('600x600')
@@ -156,6 +160,21 @@ def check_remind_pass(): #sprawdza czy podany email jest w bazie i wysyla maila
     for line in e_list:
         if line == email_remind:
             messagebox.showinfo(title ='Password', message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+
+            message = Mail(
+                from_email='from_email@example.com',
+                to_emails='to@example.com',
+                subject='Sending with Twilio SendGrid is Fun',
+                html_content='<strong>and easy to do anywhere, even with Python</strong>')
+            try:
+                sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
+
             break
         else:
             messagebox.showinfo(title='Password', message='There is no such password in the database!')
@@ -165,19 +184,19 @@ def remind_password():
 
     window_remind = tk.Toplevel(root)
     window_remind.title('Reminder')
-    window_remind.configure()
-    window_remind.geometry('400x500')
+    window_remind.configure(bg='grey')
+    window_remind.geometry('400x300')
     root.resizable(width=False, height=False)
 
 
     Label(window_remind,text='Forgot your password? No problem!', font='calibri 17 bold').place(x=50,y=30)
 
-    Label(window_remind,text='Email: ', font='calibri 16').place(x=10,y=100)
+    Label(window_remind,text='Email: ', font='calibri 16').place(x=40,y=100)
     global remind_email
     remind_email = Entry(window_remind, font= 'calibri 17', bd = 0, bg = '#e4eaf5', fg = 'black')
     remind_email.place(x=100,y=100)
 
-    Button(window_remind,text='New Password',font='calibri 17', fg='black', bd=0, bg='white', command=check_remind_pass).place(x=180, y=420)
+    Button(window_remind,text='New Password',font='calibri 17', fg='black', bd=0, bg='white', command=check_remind_pass).place(x=120, y=180)
 
 
 
