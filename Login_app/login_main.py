@@ -2,13 +2,10 @@ import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
 import sqlite3
-
 from dotenv import load_dotenv
 from os import environ
-
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -16,6 +13,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 root = Tk()
 root.title('Plan Your Travel - login')
 root.geometry('600x600')
+root.eval('tk::PlaceWindow . center')
 root.resizable(width=False, height=False)
 
 canvas = Canvas(root, width=600, height=600)
@@ -100,13 +98,12 @@ def singup_tabel():
     messagebox.showinfo(title='Register', message='Great! Your account has been created!')
 
 
-def singup_window(): # otwiera okno z rejestracja
+def singup_window():  # otwiera okno z rejestracja
     window_singup = tk.Toplevel(root)
     window_singup.grab_set()
     window_singup.title("Sing up")
     window_singup.resizable(width=False, height=False)
     window_singup.geometry('400x500')
-
 
     Label(window_singup,
           text="Greate that you want to create an account in our program! \nRegister your account by providing the details below:",
@@ -119,16 +116,15 @@ def singup_window(): # otwiera okno z rejestracja
     global sing_remind
     global sing_age
 
-
     Label(window_singup, text="First name: ", font='calibri 16 bold').place(x=40, y=69)
     sing_n = StringVar()
     sing_name = Entry(window_singup, textvariable=sing_n, width=18, font='calibri 17', bd=0, bg='white', fg='black')
     sing_name.place(x=150, y=70)
 
-
     Label(window_singup, text="Last name: ", font='calibri 16 bold').place(x=40, y=118)
     sing_l = StringVar()
-    sing_lastname = Entry(window_singup, textvariable=sing_l, width=18, font='calibri 17', bd=0, bg='#e4eaf5',fg='black')
+    sing_lastname = Entry(window_singup, textvariable=sing_l, width=18, font='calibri 17', bd=0, bg='#e4eaf5',
+                          fg='black')
     sing_lastname.place(x=150, y=120)
 
     Label(window_singup, text="Email: ", font='calibri 16 bold').place(x=40, y=169)
@@ -138,7 +134,8 @@ def singup_window(): # otwiera okno z rejestracja
 
     Label(window_singup, text="Password: ", font='calibri 16 bold').place(x=40, y=220)
     sing_p = StringVar()
-    sing_password = Entry(window_singup, textvariable=sing_p, width=18, font='calibri 17', bd=0, bg='#e4eaf5',fg='black')
+    sing_password = Entry(window_singup, textvariable=sing_p, width=18, font='calibri 17', bd=0, bg='#e4eaf5',
+                          fg='black')
     sing_password.place(x=150, y=220)
 
     Label(window_singup, text="Hint: ", font='calibri 16 bold').place(x=40, y=268)
@@ -151,10 +148,11 @@ def singup_window(): # otwiera okno z rejestracja
     sing_age = Entry(window_singup, textvariable=sing_a, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
     sing_age.place(x=150, y=320)
 
-    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(x=190, y=380) # otwiera   #
+    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(
+        x=190, y=380)  # otwiera   #
 
-def check_remind_pass(): #sprawdza czy podany email jest w bazie i wysyla maila
 
+def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla maila
 
     email_remind = remind_email.get()
 
@@ -166,58 +164,51 @@ def check_remind_pass(): #sprawdza czy podany email jest w bazie i wysyla maila
     e_list = list(sum(result_remind, ()))
     print(e_list)
 
-
     for line in e_list:
-            if line == email_remind:
-                messagebox.showinfo(title='Password',
-                                    message='Your email is in the database! We have sent an email with the opportunity to reset your password')
-                load_dotenv()
-                api_key = environ.get('API_KEY')
-                print(api_key)
+        if line == email_remind:
+            messagebox.showinfo(title='Password',
+                                message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+            load_dotenv()
+            api_key = environ.get('API_KEY')
+            print(api_key)
 
-                message = Mail(
-                    from_email='pawel.milewski01@gmail.com',
-                    to_emails=email_remind,
-                    subject='Test Pawel application ! :) ',
-                    html_content='<strong>and easy to do anywhere, even with Python</strong>')
-                try:
-                    sg = SendGridAPIClient(api_key)
-                    response = sg.send(message)
+            message = Mail(
+                from_email='pawel.milewski01@gmail.com',
+                to_emails=email_remind,
+                subject='Test Pawel application ! :) ',
+                html_content='<strong>and easy to do anywhere, even with Python</strong>')
+            try:
+                sg = SendGridAPIClient(api_key)
+                response = sg.send(message)
 
-                    print(response.status_code)
-                    print(response.body)
-                    print(response.headers)
-                except Exception as e:
-                    print(message)
-                    print(response)
-                break
-
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(message)
+                print(response)
+            break
 
     else:
         messagebox.showinfo(title='Password', message='There is no such password in the database!')
 
 
-
 def remind_password():
-
     window_remind = tk.Toplevel(root)
     window_remind.title('Reminder')
     window_remind.configure(bg='grey')
     window_remind.geometry('400x300')
     root.resizable(width=False, height=False)
 
+    Label(window_remind, text='Forgot your password? No problem!', font='calibri 17 bold').place(x=50, y=30)
 
-    Label(window_remind,text='Forgot your password? No problem!', font='calibri 17 bold').place(x=50,y=30)
-
-    Label(window_remind,text='Email: ', font='calibri 16').place(x=40,y=100)
+    Label(window_remind, text='Email: ', font='calibri 16').place(x=40, y=100)
     global remind_email
-    remind_email = Entry(window_remind, font= 'calibri 17', bd = 0, bg = '#e4eaf5', fg = 'black')
-    remind_email.place(x=100,y=100)
+    remind_email = Entry(window_remind, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
+    remind_email.place(x=100, y=100)
 
-    Button(window_remind,text='New Password',font='calibri 17', fg='black', bd=0, bg='white', command=check_remind_pass).place(x=120, y=180)
-
-
-
+    Button(window_remind, text='New Password', font='calibri 17', fg='black', bd=0, bg='white',
+           command=check_remind_pass).place(x=120, y=180)
 
 
 ####################### FRONT #######################
@@ -243,17 +234,14 @@ canvas.create_text(70, 243, text="Password", font='calibri 17 bold', fill='white
 EntryP = Entry(root, width=19, font='calibri 17', bd=0, bg='#e4eaf5', fg='black', show='*')
 EntryP.place(x=130, y=230)
 
-
 # Remind Passwords
 
-Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, bg='white',command=remind_password).place(x=130, y=320)
+Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, bg='white',
+       command=remind_password).place(x=130, y=320)
 
 # Register Accounts
 
 canvas.create_text(230, 400, text='You dont have accounts? Sing up!', font='calibri 17 bold', fill='white')
 Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(x=180, y=420)
 
-
-
 root.mainloop()
-
