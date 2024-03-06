@@ -8,6 +8,10 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import ssl
 
+import psycopg2
+
+
+
 ssl._create_default_https_context = ssl._create_unverified_context
 
 root = Tk()
@@ -21,16 +25,22 @@ canvas.pack(fill='both', expand=True)
 
 ################### DEF ###########################
 
-data = sqlite3.connect("file:/Users/pablom/PycharmProjects/Projekty2024/Login_app/Login_data.db", uri=True)
+data = psycopg2.connect(dbname="postgres",host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
+
+#data = sqlite3.connect("file:/Users/pablom/PycharmProjects/Projekty2024/Login_app/Login_data.db", uri=True)
 
 
 def create_table(data):
     try:
         cur = data.cursor()
-        cur.execute("CREATE TABLE LoginPass(name, lastname, email, password, reminder,age)")
-    except:
-        pass
+        sql = "CREATE TABLE IF NOT EXISTS loginpass (name TEXT, lastname TEXT, email TEXT, password TEXT, reminder TEXT,age INT)"
 
+        cur.execute(sql)
+        data.commit()
+
+
+    except psycopg2.Error as e:
+        print(e)
 
 def login():
     global log
@@ -67,7 +77,7 @@ def login_new_window():
 
     cur = data.cursor()
     cur.execute("""
-                     SELECT name, lastname, email, password, reminder,age FROM LoginPass WHERE email = ?
+                     SELECT name, lastname, email, password, reminder,age FROM LoginPass WHERE email = %1
                  """, (log,))
     result2 = cur.fetchall()
 
@@ -92,8 +102,8 @@ def singup_tabel():
     cur = data.cursor()
     cur.execute("""
                     INSERT INTO LoginPass(name, lastname, email, password, reminder,age)
-                    VALUES(?,?,?,?,?,?)
-                    """, (sn, sl, se, sp, sr, sa))
+                    VALUES ($1,$2,$3,$4,$5,$6)""", (sn, sl, se, sp, sr, sa))
+
     data.commit()
     messagebox.showinfo(title='Register', message='Great! Your account has been created!')
 
@@ -243,5 +253,6 @@ Button(root, text='Forgot Your Password?', font='calibri 16', fg='black', bd=0, 
 
 canvas.create_text(230, 400, text='You dont have accounts? Sing up!', font='calibri 17 bold', fill='white')
 Button(root, text='Sing Up', font='calibri 17', fg='black', bd=0, bg='white', command=singup_window).place(x=180, y=420)
+
 
 root.mainloop()
