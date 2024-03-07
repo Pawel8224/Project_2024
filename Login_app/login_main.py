@@ -95,15 +95,19 @@ def singup_tabel():
                     VALUES (%s,%s,%s,%s,%s,%s)""", (sn, sl, se, sp, sr, sa))
 
     data.commit()
-    messagebox.showinfo(title='Register', message='Great! Your account has been created!')
+
+    messagebox.showinfo(title='Register', message='Great! Your account has been created!',options = window_singup.destroy())
+
 
 
 def singup_window():  # otwiera okno z rejestracja
+    global window_singup
     window_singup = tk.Toplevel(root)
     window_singup.grab_set()
     window_singup.title("Sing up")
     window_singup.resizable(width=False, height=False)
     window_singup.geometry('400x500')
+
 
     Label(window_singup,
           text="Greate that you want to create an account in our program! \nRegister your account by providing the details below:",
@@ -148,7 +152,7 @@ def singup_window():  # otwiera okno z rejestracja
     sing_age = Entry(window_singup, textvariable=sing_a, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
     sing_age.place(x=150, y=320)
 
-    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(
+    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command= singup_tabel).place(
         x=190, y=380)  # otwiera   #
 
 
@@ -167,7 +171,7 @@ def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla mail
     for line in e_list:
         if line == email_remind:
             messagebox.showinfo(title='Password',
-                                message='Your email is in the database! We have sent an email with the opportunity to reset your password')
+                                message='Your email is in the database! We have sent an email with the opportunity to reset your password',options = window_remind.destroy())
             load_dotenv()
             api_key = environ.get('API_KEY')
             print(api_key)
@@ -194,6 +198,7 @@ def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla mail
 
 
 def remind_password():
+    global window_remind
     window_remind = tk.Toplevel(root)
     window_remind.title('Reminder')
     window_remind.configure(bg='grey')
