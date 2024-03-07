@@ -1,15 +1,12 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-import sqlite3
 from dotenv import load_dotenv
 from os import environ
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import ssl
-
 import psycopg2
-
 ssl._create_default_https_context = ssl._create_unverified_context
 
 root = Tk()
@@ -26,18 +23,12 @@ canvas.pack(fill='both', expand=True)
 data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
 
 
-# data = sqlite3.connect("file:/Users/pablom/PycharmProjects/Projekty2024/Login_app/Login_data.db", uri=True)
-
-
 def create_table(data):
     try:
         cur = data.cursor()
         sql = "CREATE TABLE IF NOT EXISTS loginpass (name TEXT, lastname TEXT, email TEXT, password TEXT, reminder TEXT,age INT)"
-
         cur.execute(sql)
         data.commit()
-
-
     except psycopg2.Error as e:
         print(e)
 
