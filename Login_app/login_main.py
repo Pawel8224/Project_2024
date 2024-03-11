@@ -23,7 +23,7 @@ canvas.pack(fill='both', expand=True)
 ################### DEF ###########################
 
 
-def create_table(data):
+def create_table(data): # tworzy tabele jesli jej nie ma
     try:
         cur = data.cursor()
         sql = "CREATE TABLE IF NOT EXISTS loginpass (name TEXT, lastname TEXT, email TEXT, password TEXT, reminder TEXT,age INT)"
@@ -33,7 +33,7 @@ def create_table(data):
         print(e)
 
 
-def login():
+def login(): # sprawdza czy jest konto w bazie
     global log
     log = EntryL.get()
     pas = EntryP.get()
@@ -54,7 +54,7 @@ def login():
         messagebox.showwarning(title='Login', message='Login failed - your password or login is incorrect!')
 
 
-def login_new_window():
+def login_new_window(): # otwiera nowe okno po logowaniu "profil"
     window = tk.Toplevel()
     window.configure(background='grey')
     window.resizable(width=False, height=False)
@@ -85,7 +85,7 @@ def login_new_window():
     Button(window,text='Delete your account', font='calibri 16', fg='black', bd=0,bg='white',command=delete_account).place(x=90,y=250)
 
 
-def delete_account():
+def delete_account(): # usuwa konto z tabeli
     result_ask = messagebox.askyesno(title='Delete Account', message='Are you sure you want to delete account?')
     if result_ask:
         print()
@@ -97,7 +97,7 @@ def delete_account():
     else:
         pass
 
-def singup_tabel():
+def singup_tabel(): # dodaje nowe konto do tabeli
     sn = sing_name.get()
     sl = sing_lastname.get()
     se = sing_email.get()
@@ -213,7 +213,7 @@ def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla mail
         messagebox.showinfo(title='Password', message='There is no such password in the database!')
 
 
-def remind_password():
+def remind_password(): # okno z przypomnieniem hasla
     global window_remind
     window_remind = tk.Toplevel(root)
     window_remind.title('Reminder')
