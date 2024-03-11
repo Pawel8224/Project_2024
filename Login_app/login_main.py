@@ -86,13 +86,14 @@ def login_new_window():
 
 
 def delete_account():
-    result_ask = messagebox.askyesno(title='Delete Account', message='Are you sure you want to delete acount?')
+    result_ask = messagebox.askyesno(title='Delete Account', message='Are you sure you want to delete account?')
     if result_ask:
         print()
         cur = data.cursor()
         cur.execute("""
-                    
-                    """)
+                    DELETE FROM loginpass WHERE email = %s RETURNING *
+                    """, (log,))
+        data.commit()
     else:
         pass
 
