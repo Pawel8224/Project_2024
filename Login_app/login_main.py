@@ -55,6 +55,7 @@ def login(): # sprawdza czy jest konto w bazie
 
 
 def login_new_window(): # otwiera nowe okno po logowaniu "profil"
+    global window
     window = tk.Toplevel()
     window.configure(background='grey')
     window.resizable(width=False, height=False)
@@ -80,7 +81,6 @@ def login_new_window(): # otwiera nowe okno po logowaniu "profil"
     Label(window, text="Hint: " + result4[4]).place(x=20, y=170)
     Label(window, text="Age: " + str(result4[5])).place(x=20, y=195)
 
-    #Button
 
     Button(window,text='Delete your account', font='calibri 16', fg='black', bd=0,bg='white',command=delete_account).place(x=90,y=250)
 
@@ -94,6 +94,7 @@ def delete_account(): # usuwa konto z tabeli
                     DELETE FROM loginpass WHERE email = %s RETURNING *
                     """, (log,))
         data.commit()
+        window.destroy()
     else:
         pass
 
