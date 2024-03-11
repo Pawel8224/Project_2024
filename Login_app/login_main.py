@@ -9,6 +9,8 @@ import ssl
 import psycopg2
 ssl._create_default_https_context = ssl._create_unverified_context
 
+data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
+
 root = Tk()
 root.title('Plan Your Travel - login')
 root.geometry('600x600')
@@ -19,8 +21,6 @@ canvas = Canvas(root, width=600, height=600)
 canvas.pack(fill='both', expand=True)
 
 ################### DEF ###########################
-
-data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
 
 
 def create_table(data):
@@ -80,6 +80,21 @@ def login_new_window():
     Label(window, text="Hint: " + result4[4]).place(x=20, y=170)
     Label(window, text="Age: " + str(result4[5])).place(x=20, y=195)
 
+    #Button
+
+    Button(window,text='Delete your account', font='calibri 16', fg='black', bd=0,bg='white',command=delete_account).place(x=90,y=250)
+
+
+def delete_account():
+    result_ask = messagebox.askyesno(title='Delete Account', message='Are you sure you want to delete acount?')
+    if result_ask:
+        print()
+        cur = data.cursor()
+        cur.execute("""
+                    
+                    """)
+    else:
+        pass
 
 def singup_tabel():
     sn = sing_name.get()
