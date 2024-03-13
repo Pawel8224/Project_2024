@@ -360,11 +360,11 @@ canvas1.create_text(110, 450, text='Highways', font='calibri 17', fill='black')
 
 # BUTTON - POKAZ WYNIK / WYCZYSC ------------------------------------------------
 
-summary_button = Button(root, text='CZAS / DYSTANS / KOSZT', font='calibri 15', fg='black', bd=0, bg='white',
+summary_button = Button(root, text='TIME / DISTANCE / COST', font='calibri 15', fg='black', bd=0, bg='white',
                         command=lambda: [summary(), show_weather()])
 summary_button.place(x=145, y=480)
 
-d_button = Button(root, text='WYCZYSC', font='calibri 15', fg='black', bd=0, bg='white', command=clearList)
+d_button = Button(root, text='CLEAR', font='calibri 15', fg='black', bd=0, bg='white', command=clearList)
 d_button.place(x=200, y=512)
 
 # BUTTON - ZAPISZE DANE / ODTWORZ / POKAZ PODROZE -------------------------------------------------
