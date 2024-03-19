@@ -51,8 +51,6 @@ def new_window_history():
         text_sum = "%s | %s | Kurs: %s" % (cod, cur, float(val))
         show_cur.insert(END, text_sum)
 
-    # Wyświetl kursy
-
 
 ############# TKINTER  #############
 
