@@ -3,7 +3,6 @@ import tkinter as tk
 import requests
 from tkinter import messagebox
 
-
 #############  DEF   #############
 
 def act_rate():
@@ -28,7 +27,6 @@ def act_rate():
 
 def sum_history_value():
     url_date = date_entry.get()
-    print(url_date)
 
     try:
         url = "http://api.nbp.pl/api/exchangerates/tables/A/%s/" % (str(url_date))
@@ -70,7 +68,6 @@ def new_window_history():
 
 
 ############# TKINTER  #############
-
 
 root = Tk()
 root.title('Przelicznik kursów walut')
