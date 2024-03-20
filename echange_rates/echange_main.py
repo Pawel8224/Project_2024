@@ -26,30 +26,47 @@ def act_rate():
         messagebox.showinfo(title='Informacja', message='Nie podałeś wartości KWOTA')
 
 
+def sum_history_value():
+    url_date = date_entry.get()
+    print(url_date)
+
+    try:
+        url = "http://api.nbp.pl/api/exchangerates/tables/A/%s/" % (str(url_date))
+        body1 = requests.get(url)
+        response1 = body1.json()
+        frame_show_cur = Frame(new_windows, width=60, height=30, bd=0, bg='white')
+        frame_show_cur.place(x=20, y=80)
+
+        show_cur = Listbox(frame_show_cur, font=('calibri', 14), width=40, height=28, bg='#e4eaf5', fg='black')
+        show_cur.pack(side=LEFT, fill=BOTH)
+
+        for rate1 in response1[0]['rates']:
+            cur = str(rate1['currency'])
+            cod = str(rate1['code'])
+            val = float(rate1['mid'])
+
+            text_sum = " %s | %s | Kurs: %s" % (cod, cur, float(val))
+            show_cur.insert(END, text_sum)
+    except:
+        messagebox.showwarning(title='Komunikat', message='Nie ma takiej daty w bazie')
+
+
 def new_window_history():
+    global new_windows
+    global date_entry
     new_windows = tk.Toplevel()
     new_windows.title('Przelicznik kursów walut')
     new_windows.geometry('400x600')
     new_windows.resizable(width=False, height=False)
 
-    Label(new_windows, text='Kursy z dnia poprzedniego', font='calibri 19').place(x=80, y=10)
+    Label(new_windows, text='Kursy historyczne', font='calibri 17 bold').place(x=120, y=5)
+    Label(new_windows, text='ROK-MIESIAC-DZIEN: ', font='calibri 13').place(x=10, y=45)
+    Button(new_windows, text='Pokaż wyniki', font='calibri 13', fg='black', bg='white',
+           command=sum_history_value).place(x=270, y=41)
 
-    body1 = requests.get('http://api.nbp.pl/api/exchangerates/tables/A/2024-03-18/2024-03-18/')
-    response1 = body1.json()
-
-    frame_show_cur = Frame(new_windows, width=60, height=30, bd=0, bg='white')
-    frame_show_cur.place(x=20, y=60)
-
-    show_cur = Listbox(frame_show_cur, font=('calibri', 14), width=40, height=28, bg='#e4eaf5', fg='black')
-    show_cur.pack(side=LEFT, fill=BOTH)
-
-    for rate1 in response1[0]['rates']:
-        cur = str(rate1['currency'])
-        cod = str(rate1['code'])
-        val = float(rate1['mid'])
-
-        text_sum = "%s | %s | Kurs: %s" % (cod, cur, float(val))
-        show_cur.insert(END, text_sum)
+    date = StringVar()
+    date_entry = Entry(new_windows, textvariable=date, width=10, font='calibri 14', fg='white', bd=0, bg='grey')
+    date_entry.place(x=160, y=45)
 
 
 ############# TKINTER  #############
@@ -94,9 +111,6 @@ Button(root, text='Sprawdź kurs/kwote', font='calibri 16', fg='black', bg='whit
 # Button - pokaż dane historyczne
 Button(root, text='Pokaż historie kursów', font='calibri 16', fg='black', bg='white', command=new_window_history).place(
     x=94, y=430)
-
-# (new_window) Frame - wyświetl wynik
-
 
 # Dodatkowe info
 canvas.create_text(190, 480, text='Dane z API: NBP https://api.nbp.pl/,', font='calibri 13', fill='white')
