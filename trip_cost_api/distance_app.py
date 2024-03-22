@@ -1,4 +1,4 @@
-import tkinter as tk
+ETimport tkinter as tk
 import psycopg2
 import requests
 from tkinter import *
@@ -11,7 +11,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-data = psycopg2.connect(dbname="trip_cost", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
+data = psycopg2.connect(dbname="trip_cost", host="mws02.mikr.us", port="50189", user="postgres", password="SECRET")
 
 root = Tk()
 root.configure(bg='black', bd=0)
