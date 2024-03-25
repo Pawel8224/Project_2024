@@ -1,4 +1,13 @@
-ETimport tkinter as tk
+"""
+An app that calculates the cost and time of travel along with the weather at the destination
+- Tkinter
+- Postgres
+- API (google maps)
+
+Check show_app.png
+"""
+
+import tkinter as tk
 import psycopg2
 import requests
 from tkinter import *
@@ -11,7 +20,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-data = psycopg2.connect(dbname="trip_cost", host="mws02.mikr.us", port="50189", user="postgres", password="SECRET")
+data = psycopg2.connect(dbname="trip_cost", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
 
 root = Tk()
 root.configure(bg='black', bd=0)
@@ -27,6 +36,10 @@ destinations = ""
 # --------------------------------------------- METHODS --------------------------------------------------#
 
 def delete_trip():
+    """
+    Delete trip from frame and database
+    """
+
     result = messagebox.askyesno(title='Delete trip', message='Are you sure you want to delete trip?')
     if result:
         cur = data.cursor()
@@ -38,6 +51,10 @@ def delete_trip():
 
 
 def export_list():
+    """
+    Export trip to txt file
+    """
+
     cur = data.cursor()
     cur.execute("""SELECT travel,distance,duration, cost FROM travel""")
     result = cur.fetchall()
@@ -51,6 +68,10 @@ def export_list():
 
 
 def show_trip():
+    """
+    Show all trip saved in database
+    """
+
     cur = data.cursor()
     cur.execute("""SELECT travel, distance, duration, cost FROM travel""")
     result = cur.fetchall()
@@ -71,14 +92,24 @@ def show_trip():
 
 
 def msg_savebut():
+    """
+    message saving
+    """
     messagebox.showinfo(title='Information', message="Your travel has been saved!")
 
 
 def msg_exportbut():
+    """
+    message export
+    """
     messagebox.showinfo(title="Information", message="Export list done")
 
 
 def New_Window():
+    """
+    Opens new window with saved user trips
+    """
+
     global window
     window = tk.Toplevel()
     window.configure(background='white')
@@ -112,7 +143,9 @@ def New_Window():
 
 
 def openURL():
-    # otwiera URL do Google Maps
+    """
+    Opens URL to google maps and show your trip (based on the data provided by the user)
+    """
 
     if origins is None:
         webbrowser.open('https://www.google.pl/maps/preview')
@@ -121,17 +154,26 @@ def openURL():
 
 
 def openGasURL():
+    """
+    Opens URL to gas station and price
+    """
+
     webbrowser.open('https://cena-paliw.pl/')
 
 
 def clearList():
-    # czysci liste
+    """
+    Clears the list from the data in the window
+    """
+
 
     sumary_list.delete(0, END)
 
 
 def checkerror():
-    # wyświetla błąd
+    """
+    Displays an error regarding the absence of the specified town in the google maps database
+    """
 
     if statusi == 'NOT_FOUND':
         messagebox.showwarning(title='Information', message='City not found! \n Check the data provided')
@@ -140,7 +182,9 @@ def checkerror():
 
 
 def summary():
-    # podsumowanie
+    """
+    It collects the given data from the user, sends after the API to google maps and returns all the travel information on the user's screen
+    """
 
     load_dotenv()
     api_key = environ.get('API_KEY')
@@ -155,10 +199,10 @@ def summary():
     tollBut = toll_button.get()
     highBut = high_button.get()
 
-    # wywołujemy URL do API
+
     url = "https://maps.googleapis.com/maps/api/distancematrix/json"
 
-    # podajemy dane dot. trasy
+    # we provide data on the route
 
     pay_load = {
         'origins': f'{origins}',
@@ -169,7 +213,7 @@ def summary():
 
     }
 
-    # wywołujemy jsona
+    # request JSON
     response = get(url, pay_load)
     body = response.json()
     print(body)
@@ -205,7 +249,9 @@ def summary():
 
 
 def d_weather(city):
-    # zaciąga dane z API Pogodowego
+    """
+    Downloaded weather data from the API based on the specified destinations city
+    """
 
     load_dotenv()
     api_keyW = environ.get('API_KEYW')
@@ -234,7 +280,9 @@ def d_weather(city):
 
 
 def show_weather():
-    # wyświetlanie pogody
+    """
+    Displays the weather on the user's screen
+    """
 
     city = addres_entryD.get()
     weather = d_weather(city)
@@ -245,9 +293,13 @@ def show_weather():
     weather_lbl['text'] = '{}'.format(weathers)
 
 
-## SQLITE - zapis/odczyt
+## Postgres - save/download
 
 def create_table(data):
+    """
+    Creates a table in postgres if it doesn't exist
+    """
+
     try:
         cur = data.cursor()
         sql = "CREATE TABLE IF NOT EXISTS travel(travel TEXT, distance TEXT, duration TEXT, cost TEXT)"
@@ -258,6 +310,10 @@ def create_table(data):
 
 
 def save_trip():
+    """
+    Save trip in postgres database
+    """
+
     try:
         print(doc, a, b, c)
     except:
@@ -272,37 +328,36 @@ def save_trip():
     data.commit()
 
 
-############################### ---  OKNO GLOWNE  ---  #######################################################
+############################### ---  MAIN WINDOW ---  #######################################################
 # ---------------------------------  FRONTEND ---------------------------------------------------------------#
 create_table(data)
 
 canvas1 = Canvas(root, width=490, height=830)
 canvas1.pack(fill='both', expand=True)
 
-# BACKGROUND
-
+# BACKGROUND  ------------------------------------------------
 bb = PhotoImage(file='/Users/pablom/PycharmProjects/Projekty2024/trip_cost_api/bbg.png')
 canvas1.create_image(0, 68, image=bb, anchor="nw")
 
-# TOPBAR
+# TOPBAR  ------------------------------------------------
 TopImage = PhotoImage(file='/Users/pablom/PycharmProjects/Pliki/distance_app/ab.png')
 canvas1.create_image(0, 0, image=TopImage, anchor="nw")
 
-# IKONA GOOGLE MAPS - OTWIERA LINK  ------------------------------------------------
+# ICON GOOGLE MAPS - OPEN LINK  ------------------------------------------------
 dockImage = PhotoImage(file='/Users/pablom/PycharmProjects/Pliki/distance_app/top_icon.png')
 Button(root, image=dockImage, bd=0, bg='grey', command=openURL).place(x=40, y=95)
 
-# IKONA PALIWA
+# ICON GAS - OPEN LINK  ------------------------------------------------
 gasImage = PhotoImage(file='/Users/pablom/PycharmProjects/Pliki/distance_app/gas.png')
 Button(root, image=gasImage, bd=0, bg='black', command=openGasURL).place(x=110, y=95)
 
-# TEKST GŁÓWNY ------------------------------------------------
+# TOP TEXT ------------------------------------------------
 
 canvas1.create_text(300, 115, text="Plan your trip!", font='calibri 25 bold', fill='black')
 
 ##############################  ---- OKNA ---  ##############################
 
-# OKNO START PODROZY  ------------------------------------------------
+# START TRIP  ------------------------------------------------
 frameO = Frame(root, width=190, height=35, bg='grey')
 frameO.place(x=180, y=190)
 
@@ -311,7 +366,7 @@ addres_entryO.place(x=0, y=1)
 
 canvas1.create_text(110, 208, text="ORIGIN", font='calibri 18 bold', fill='black', )
 
-# OKNO - KONIEC PODROZY  ------------------------------------------------
+# END TRIP (Destination)  ------------------------------------------------
 frameD = Frame(root, width=190, height=35, bg='grey')
 frameD.place(x=180, y=240)
 
@@ -320,7 +375,7 @@ addres_entryD.place(x=0, y=1)
 
 canvas1.create_text(109, 258, text="DESTINATION", font='calibri 17 bold', fill='black')
 
-# OKNO - SPALANIE  ------------------------------------------------
+# FUEL USAGE ------------------------------------------------
 
 frameS = Frame(root, width=86, height=35, bg='grey')
 frameS.place(x=180, y=299)
@@ -330,7 +385,7 @@ gas_entry.place(x=0, y=1)
 
 canvas1.create_text(107, 316, text="FUEL USAGE", font='calibri 17 bold', fill='black')
 
-# OKNO - CENA PALIWA ------------------------------------------------
+# FUEL PRICE ------------------------------------------------
 
 frameP = Frame(root, width=86, height=35, bg='grey')
 frameP.place(x=180, y=354)
@@ -342,13 +397,13 @@ canvas1.create_text(108, 372, text="FUEL PRICE", font='calibri 17 bold', fill='b
 
 ###########################------- CHECKBOX  ----##############################
 
-# CHECKBOX - ODCINKI PLATNE ----------------------------------------------------------------
+# CHECKBOX - tool road ----------------------------------------------------------------
 toll_button = StringVar()
 tolbutton = Checkbutton(root, width=2, onvalue='tolls', offvalue='none', variable=toll_button).place(x=180, y=406)
 
 canvas1.create_text(110, 417, text='Toll roads', font='calibri 17', fill='black')
 
-# CHECKBOX - AUTOSTRADY ----------------------------------------------------------------
+# CHECKBOX - highways----------------------------------------------------------------
 
 high_button = StringVar()
 high_tbutton = Checkbutton(root, width=2, onvalue='highways', offvalue='none', variable=high_button).place(x=180, y=435)
@@ -358,7 +413,7 @@ canvas1.create_text(110, 450, text='Highways', font='calibri 17', fill='black')
 ############################### ---- BUTTON ----- ##############################
 
 
-# BUTTON - POKAZ WYNIK / WYCZYSC ------------------------------------------------
+# BUTTON - SHOW TRIP / CLEAR ------------------------------------------------
 
 summary_button = Button(root, text='TIME / DISTANCE / COST', font='calibri 15', fg='black', bd=0, bg='white',
                         command=lambda: [summary(), show_weather()])
@@ -367,7 +422,7 @@ summary_button.place(x=145, y=480)
 d_button = Button(root, text='CLEAR', font='calibri 15', fg='black', bd=0, bg='white', command=clearList)
 d_button.place(x=200, y=512)
 
-# BUTTON - ZAPISZE DANE / ODTWORZ / POKAZ PODROZE -------------------------------------------------
+# BUTTON - SAVE TRIP / SHOW TRIP -------------------------------------------------
 
 savetrip = Button(root, text='Save\nTrip', font='calibri 13', fg='black',
                   command=lambda: [save_trip(), msg_savebut()]).place(x=8, y=560)
@@ -378,14 +433,14 @@ open_trip = Button(root, text='Show\nTrip', font='calibri 13', fg='black',
 ############################### ---- WYNIK DANE ----- ##############################
 
 
-# LISTBOX - RAMKA Z WYNIKIEM ------------------------------------------------
+# LISTBOX - SUMMARY FRAME ------------------------------------------------
 frame_summary = Frame(root, width=290, height=150, bd=0, bg='grey')
 frame_summary.place(x=90, y=550)
 
 sumary_list = Listbox(frame_summary, font=('arial', 18), width=29, height=6, bg='#e4eaf5', fg='black')
 sumary_list.pack(side=LEFT, fill=BOTH, padx=2)
 
-############################### ---- POGODA  ----- ##############################
+############################### ---- WEATHER  ----- ##############################
 
 location_lbl = Label(root, text='', font='calibri 21')
 location_lbl.place(x=140, y=690)
