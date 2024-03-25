@@ -7,6 +7,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import ssl
 import psycopg2
+
 ssl._create_default_https_context = ssl._create_unverified_context
 
 data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="SECRET")
@@ -23,7 +24,11 @@ canvas.pack(fill='both', expand=True)
 ################### DEF ###########################
 
 
-def create_table(data): # tworzy tabele jesli jej nie ma
+def create_table(data):
+    """
+    Creates a table in postgres if it doesn't exist
+    """
+
     try:
         cur = data.cursor()
         sql = "CREATE TABLE IF NOT EXISTS loginpass (name TEXT, lastname TEXT, email TEXT, password TEXT, reminder TEXT,age INT)"
@@ -33,7 +38,11 @@ def create_table(data): # tworzy tabele jesli jej nie ma
         print(e)
 
 
-def login(): # sprawdza czy jest konto w bazie
+def login():
+    """
+    Checks if the account given by the user (email) is in the postgres database
+    """
+
     global log
     log = EntryL.get()
     pas = EntryP.get()
@@ -54,7 +63,11 @@ def login(): # sprawdza czy jest konto w bazie
         messagebox.showwarning(title='Login', message='Login failed - your password or login is incorrect!')
 
 
-def login_new_window(): # otwiera nowe okno po logowaniu "profil"
+def login_new_window():  # otwiera nowe okno po logowaniu "profil"
+    """
+    Opens new window after login and show user profile
+    """
+
     global window
     window = tk.Toplevel()
     window.configure(background='grey')
@@ -81,11 +94,15 @@ def login_new_window(): # otwiera nowe okno po logowaniu "profil"
     Label(window, text="Hint: " + result4[4]).place(x=20, y=170)
     Label(window, text="Age: " + str(result4[5])).place(x=20, y=195)
 
+    Button(window, text='Delete your account', font='calibri 16', fg='black', bd=0, bg='white',
+           command=delete_account).place(x=90, y=250)
 
-    Button(window,text='Delete your account', font='calibri 16', fg='black', bd=0,bg='white',command=delete_account).place(x=90,y=250)
 
+def delete_account():
+    """
+    Delete account from database
+    """
 
-def delete_account(): # usuwa konto z tabeli
     result_ask = messagebox.askyesno(title='Delete Account', message='Are you sure you want to delete account?')
     if result_ask:
         print()
@@ -98,7 +115,12 @@ def delete_account(): # usuwa konto z tabeli
     else:
         pass
 
-def singup_tabel(): # dodaje nowe konto do tabeli
+
+def singup_tabel():
+    """
+    Adds new account to postgres database (download a data from user)
+    """
+
     sn = sing_name.get()
     sl = sing_lastname.get()
     se = sing_email.get()
@@ -113,18 +135,21 @@ def singup_tabel(): # dodaje nowe konto do tabeli
 
     data.commit()
 
-    messagebox.showinfo(title='Register', message='Great! Your account has been created!',options = window_singup.destroy())
+    messagebox.showinfo(title='Register', message='Great! Your account has been created!',
+                        options=window_singup.destroy())
 
 
+def singup_window():
+    """
+    Opens a new window with user registration
+    """
 
-def singup_window():  # otwiera okno z rejestracja
     global window_singup
     window_singup = tk.Toplevel(root)
     window_singup.grab_set()
     window_singup.title("Sing up")
     window_singup.resizable(width=False, height=False)
     window_singup.geometry('400x500')
-
 
     Label(window_singup,
           text="Greate that you want to create an account in our program! \nRegister your account by providing the details below:",
@@ -169,11 +194,14 @@ def singup_window():  # otwiera okno z rejestracja
     sing_age = Entry(window_singup, textvariable=sing_a, width=18, font='calibri 17', bd=0, bg='#e4eaf5', fg='black')
     sing_age.place(x=150, y=320)
 
-    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command= singup_tabel).place(
+    Button(window_singup, text='Sing up', font='calibri 16', fg='black', bd=0, bg='white', command=singup_tabel).place(
         x=190, y=380)  # otwiera   #
 
 
-def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla maila
+def check_remind_pass():
+    """
+    Checks if the specified email is in the database and sends an email (reminder password - SENDGRID)
+    """
 
     email_remind = remind_email.get()
 
@@ -188,7 +216,8 @@ def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla mail
     for line in e_list:
         if line == email_remind:
             messagebox.showinfo(title='Password',
-                                message='Your email is in the database! We have sent an email with the opportunity to reset your password',options = window_remind.destroy())
+                                message='Your email is in the database! We have sent an email with the opportunity to reset your password',
+                                options=window_remind.destroy())
             load_dotenv()
             api_key = environ.get('API_KEY')
             print(api_key)
@@ -214,7 +243,11 @@ def check_remind_pass():  # sprawdza czy podany email jest w bazie i wysyla mail
         messagebox.showinfo(title='Password', message='There is no such password in the database!')
 
 
-def remind_password(): # okno z przypomnieniem hasla
+def remind_password():  # okno z przypomnieniem hasla
+    """
+    Opens new window with reminder password
+    """
+
     global window_remind
     window_remind = tk.Toplevel(root)
     window_remind.title('Reminder')
@@ -236,7 +269,7 @@ def remind_password(): # okno z przypomnieniem hasla
 ####################### FRONT #######################
 create_table(data)
 
-login_ph = PhotoImage(file='/Users/pablom/PycharmProjects/Projekty2024/Login_app/bbbb.png')
+login_ph = PhotoImage(file='/login_app/bbbb.png')
 canvas.create_image(0, 0, image=login_ph, anchor='nw')
 
 # TopBar
