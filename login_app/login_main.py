@@ -1,3 +1,14 @@
+"""
+Test login application.
+Allows user registration,
+Login with preview of user data,
+Password reminder with email sending
+- Tkinter
+- API
+- Sendgrid
+- Postgres
+"""
+
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
