@@ -1,3 +1,9 @@
+"""
+Aplikacja pozwalająca przewalutować kwotę podaną przez użytkownika na inne waluty
+- tkinter
+- API
+"""
+
 from tkinter import *
 import tkinter as tk
 import requests
@@ -6,6 +12,13 @@ from tkinter import messagebox
 #############  DEF   #############
 
 def act_rate():
+    """
+    Pobiera dane z wartości podanej przez użytownika
+    Wysyła i odbiera response
+    Oblicza kurs i wyświetla w aplikacji
+    + gdy nie ma wartości wyświetla komunikat
+    """
+
     global aft_value
     aft_currency = option_var.get()
     body = requests.get('http://api.nbp.pl/api/exchangerates/tables/A/')
@@ -26,6 +39,10 @@ def act_rate():
 
 
 def sum_history_value():
+    """
+    Pobiera dane historyczne - biorąc pod uwagę wybraną date użytkownika i przekazuje do frame (wyświetla użytkownikowi)
+    """
+
     url_date = date_entry.get()
 
     try:
@@ -50,6 +67,11 @@ def sum_history_value():
 
 
 def new_window_history():
+    """
+    Otwiera nowe okno z danymi historycznymi
+    Pobiera dane od użytkownika i wyświetla wynik po kliknięciu buttona
+    """
+
     global new_windows
     global date_entry
     new_windows = tk.Toplevel()
@@ -111,5 +133,4 @@ Button(root, text='Pokaż historie kursów', font='calibri 16', fg='black', bg='
 
 # Dodatkowe info
 canvas.create_text(190, 480, text='Dane z API: NBP https://api.nbp.pl/,', font='calibri 13', fill='white')
-
 root.mainloop()
