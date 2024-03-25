@@ -9,7 +9,7 @@ import ssl
 import psycopg2
 ssl._create_default_https_context = ssl._create_unverified_context
 
-data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="x8nfNgNnDm")
+data = psycopg2.connect(dbname="postgres", host="mws02.mikr.us", port="50189", user="postgres", password="SECRET")
 
 root = Tk()
 root.title('Plan Your Travel - login')
